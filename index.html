@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>💘 Valentine?</title>
+  <style>
+    :root{
+      --bg1:#120018;
+      --bg2:#29002f;
+      --card: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --pink:#ff4fb7;
+      --hot:#ff2b6e;
+      --gold:#ffd36a;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 24px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(255,79,183,.28), transparent 60%),
+                  radial-gradient(900px 600px at 90% 25%, rgba(255,43,110,.20), transparent 55%),
+                  radial-gradient(900px 700px at 40% 90%, rgba(255,211,106,.16), transparent 55%),
+                  linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+      padding: env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+    }
+
+    /* Floating hearts background */
+    .hearts {
+      position:fixed; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+    }
+    .heart {
+      position:absolute;
+      width:16px; height:16px;
+      background: currentColor;
+      transform: rotate(45deg);
+      opacity:.18;
+      filter: blur(.1px);
+      animation: floatUp linear infinite;
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width:16px;height:16px;
+      border-radius:50%;
+      background: currentColor;
+      left:0; top:0;
+    }
+    .heart::after{ left:-8px; }
+    .heart::before{ top:-8px; }
+    @keyframes floatUp{
+      from{ transform: translateY(18vh) rotate(45deg) scale(.9); }
+      to  { transform: translateY(-120vh) rotate(45deg) scale(1.25); }
+    }
+
+    /* Big heart watermark on finale */
+    .big-heart{
+      position:absolute;
+      inset:-20% -20%;
+      display:none;
+      z-index:0;
+      opacity:.18;
+      filter: blur(.2px);
+      transform: rotate(-10deg);
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,79,183,.95) 0 34%, transparent 35%),
+        radial-gradient(circle at 65% 35%, rgba(255,79,183,.95) 0 34%, transparent 35%),
+        radial-gradient(circle at 50% 64%, rgba(255,79,183,.95) 0 38%, transparent 39%);
+      clip-path: polygon(50% 95%, 8% 55%, 8% 35%, 20% 20%, 35% 15%, 50% 25%, 65% 15%, 80% 20%, 92% 35%, 92% 55%);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{ transform: rotate(-10deg) scale(1); }
+      50%    { transform: rotate(-10deg) scale(1.04); }
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .card{
+      width:min(520px, 100%);
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      padding: 18px 16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .top-glow{
+      position:absolute;
+      inset:-40% -20% auto -20%;
+      height:280px;
+      background: radial-gradient(circle at 40% 35%, rgba(255,79,183,.42), transparent 60%),
+                  radial-gradient(circle at 65% 55%, rgba(255,211,106,.22), transparent 62%);
+      filter: blur(6px);
+      z-index:0;
+    }
+
+    header{
+      position:relative;
+      z-index:1;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      font-weight:600;
+      letter-spacing:.2px;
+      color: var(--text);
+      user-select:none;
+    }
+    .badge .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: linear-gradient(135deg, var(--pink), var(--hot));
+      box-shadow: 0 0 14px rgba(255,79,183,.5);
+    }
+
+    .progress{
+      height:10px;
+      flex: 1;
+      margin-left:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+    }
+    .progress > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--pink), var(--hot), var(--gold));
+      border-radius:999px;
+      transition: width .45s ease;
+    }
+
+    h1{
+      margin:8px 0 6px;
+      font-size: clamp(22px, 5vw, 32px);
+      line-height:1.12;
+      letter-spacing:-.5px;
+      position:relative;
+      z-index:1;
+    }
+    p{
+      margin:0 0 14px;
+      color: var(--muted);
+      line-height:1.4;
+      position:relative;
+      z-index:1;
+      font-size: 15px;
+    }
+
+    .screen{
+      position:relative;
+      z-index:1;
+      animation: in .45s ease both;
+    }
+    @keyframes in{
+      from{ opacity:0; transform: translateY(10px) scale(.985); }
+      to  { opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    .qa{
+      display:grid;
+      gap:12px;
+      margin-top: 12px;
+    }
+
+    .qbox{
+      padding:14px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .qtitle{
+      font-weight:700;
+      margin:0 0 10px;
+      font-size: 15px;
+      color: rgba(255,255,255,.92);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .qtitle .num{
+      width:24px;height:24px;border-radius:8px;
+      display:grid;place-items:center;
+      background: rgba(255,79,183,.18);
+      border:1px solid rgba(255,79,183,.35);
+      color: rgba(255,255,255,.9);
+      font-size: 13px;
+      flex:0 0 auto;
+    }
+    textarea{
+      width:100%;
+      min-height: 88px;
+      resize:none;
+      border-radius: 14px;
+      padding:12px 12px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      font-size: 15px;
+      line-height:1.35;
+    }
+    textarea:focus{
+      border-color: rgba(255,79,183,.55);
+      box-shadow: 0 0 0 4px rgba(255,79,183,.12);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top: 14px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight: 800;
+      letter-spacing:.2px;
+      cursor:pointer;
+      color: rgba(255,255,255,.94);
+      transition: transform .10s ease, filter .10s ease, box-shadow .2s ease;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    .btn-primary{
+      background: linear-gradient(135deg, var(--pink), var(--hot));
+      box-shadow: 0 14px 34px rgba(255,43,110,.22);
+    }
+    .btn-secondary{
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+    }
+    .btn-ghost{
+      background: transparent;
+      border:1px dashed rgba(255,255,255,.22);
+      color: rgba(255,255,255,.86);
+    }
+
+    /* The "No" button playground */
+    .playground{
+      position:relative;
+      margin-top: 14px;
+      height: 92px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px;
+    }
+    .no-btn{
+      position:absolute;
+      left: 16px;
+      top: 22px;
+    }
+    .yes-btn{
+      position:relative;
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: rgba(255,255,255,.65);
+    }
+
+    /* Finale */
+    .finale{
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .finale .big-heart{ display:block; }
+    .media{
+      display:grid;
+      gap:12px;
+      margin-top: 12px;
+    }
+    .photoWrap{
+      display:grid;
+      place-items:center;
+      border-radius: 24px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.22);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      position:relative;
+    }
+    .photoWrap img{
+      width:100%;
+      height:auto;
+      display:block;
+      max-height: 320px;
+      object-fit: cover;
+      transform: scale(1.02);
+    }
+    .photoWrap::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(500px 260px at 50% 20%, rgba(255,79,183,.20), transparent 60%),
+                  linear-gradient(180deg, transparent, rgba(0,0,0,.30));
+      pointer-events:none;
+    }
+    .gifWrap{
+      border-radius: 24px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.22);
+    }
+    .gifWrap img{
+      width:100%;
+      height:auto;
+      display:block;
+      max-height: 220px;
+      object-fit: cover;
+    }
+
+    .confetti{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:999;
+      display:none;
+    }
+    .confetti.show{ display:block; }
+
+    footer{
+      margin-top: 14px;
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      text-align:center;
+      user-select:none;
+    }
+
+    .shake{
+      animation: shake .35s ease;
+    }
+    @keyframes shake{
+      0%,100%{ transform: translateX(0); }
+      20%{ transform: translateX(-6px); }
+      40%{ transform: translateX(6px); }
+      60%{ transform: translateX(-4px); }
+      80%{ transform: translateX(4px); }
+    }
+
+    /* Mobile tweaks */
+    @media (min-width: 560px){
+      .card{ padding: 22px 20px; }
+      .playground{ height: 102px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hearts" id="hearts"></div>
+  <canvas class="confetti" id="confetti"></canvas>
+
+  <main class="wrap">
+    <section class="card" id="card" aria-live="polite">
+      <div class="top-glow"></div>
+
+      <header>
+        <div class="badge"><span class="dot"></span> Valentine Quest</div>
+        <div class="progress" aria-label="Progress"><div id="bar"></div></div>
+      </header>
+
+      <div id="screen" class="screen"></div>
+    </section>
+  </main>
+
+<script>
+  // ====== Customize these ======
+  const YOUR_NAME = "Alpha";
+  const HER_NAME  = "Kitty";
+  const PHOTO_URL = "/us.jpeg";
+  const PHOTO2_URL = "/avatar.jpg"; 
+  const GIF_URL   = "/love.gif";
+
+  const QUESTIONS = [
+    { q: "What’s your favorite memory of us?", placeholder: "Type here..." },
+    { q: "If we had the perfect date tomorrow, what would it be?", placeholder: "Tell me your dream date..." },
+    { q: "One thing you love about us?", placeholder: "I’m reading this with a smile 😳" }
+  ];
+
+  // ====== State ======
+  const screenEl = document.getElementById("screen");
+  const barEl = document.getElementById("bar");
+  const heartsEl = document.getElementById("hearts");
+  const cardEl = document.getElementById("card");
+
+  const state = {
+    step: 0,
+    answers: loadAnswers()
+  };
+
+  // Total steps: intro + questions + proposal + finale + secret
+  const TOTAL = 1 + QUESTIONS.length + 1 + 1 + 1;
+
+  // ====== Render ======
+  function setProgress() {
+    const pct = Math.round((state.step / (TOTAL - 1)) * 100);
+    barEl.style.width = pct + "%";
+  }
+
+  function render() {
+    setProgress();
+    const step = state.step;
+
+    // Intro
+    if (step === 0) {
+      screenEl.innerHTML = `
+        <h1>Hi ${HER_NAME} 💗</h1>
+        <p>I made a tiny little website just for you. Answer a few questions… and then there’s one important thing at the end 👀</p>
+        <div class="actions">
+          <button class="btn btn-primary" id="startBtn">Start ✨</button>
+        </div>
+      `;
+      document.getElementById("startBtn").onclick = () => next();
+      document.getElementById("peekBtn").onclick = () => {
+        saveAnswers(state.answers);
+        boop("Saved 💾");
+      };
+      return;
+    }
+
+    // Questions
+    const qIndex = step - 1;
+    if (qIndex >= 0 && qIndex < QUESTIONS.length) {
+      const item = QUESTIONS[qIndex];
+      const prev = state.answers[qIndex] ?? "";
+
+      screenEl.innerHTML = `
+        <h1>Question ${qIndex + 1} 💌</h1>
+        <p>${item.q}</p>
+        <div class="qa">
+          <div class="qbox">
+            <div class="qtitle"><span class="num">${qIndex + 1}</span> Your answer</div>
+            <textarea id="answer" placeholder="${escapeHtml(item.placeholder)}">${escapeHtml(prev)}</textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-secondary" id="backBtn">Back</button>
+          <button class="btn btn-primary" id="nextBtn">Next 💖</button>
+        </div>
+      `;
+
+      document.getElementById("backBtn").onclick = () => prevStep();
+      document.getElementById("nextBtn").onclick = () => {
+        const val = document.getElementById("answer").value.trim();
+        state.answers[qIndex] = val;
+        next();
+      };
+      return;
+    }
+
+    // Proposal
+    if (step === 1 + QUESTIONS.length) {
+      screenEl.innerHTML = `
+        <h1>Final Question 😳</h1>
+        <p>${HER_NAME}, would you be my Valentine?</p>
+
+        <div class="playground" id="playground" aria-label="Buttons area">
+          <button class="btn btn-primary yes-btn" id="yesBtn">YES 💘</button>
+          <button class="btn btn-secondary no-btn" id="noBtn">No 🙃</button>
+        </div>
+
+        <p class="hint">Try pressing “No”… if you can 😈</p>
+      `;
+
+      const playground = document.getElementById("playground");
+      const noBtn = document.getElementById("noBtn");
+      const yesBtn = document.getElementById("yesBtn");
+
+      // Mobile-friendly: move on touchstart and mouseenter/click
+      const evade = () => moveNoButton(playground, noBtn);
+
+      noBtn.addEventListener("mouseenter", evade);
+      noBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); evade(); littleShake(); });
+      noBtn.addEventListener("click", (e) => { e.preventDefault(); evade(); littleShake(); });
+
+      yesBtn.onclick = () => {
+        fireConfetti();
+        next();
+      };
+
+      document.getElementById("replayBtn").onclick = () => {
+        state.step = 1; render();
+      };
+
+      // Place no button safely initially
+      moveNoButton(playground, noBtn, true);
+      return;
+    }
+
+    // Finale
+    if (step === 1 + QUESTIONS.length + 1) {
+      const answersHtml = state.answers
+        .map((a, i) => `
+          <div class="qbox">
+            <div class="qtitle"><span class="num">${i+1}</span> ${escapeHtml(QUESTIONS[i].q)}</div>
+            <p style="margin:0;color:rgba(255,255,255,.88)">${escapeHtml(a || "…(left blank, still cute)")}</p>
+          </div>
+        `).join("");
+
+      screenEl.innerHTML = `
+        <div class="finale">
+          <div class="big-heart"></div>
+
+          <h1>YAY!! 💞</h1>
+          <p>Okay ${HER_NAME}… you just made ${YOUR_NAME} the happiest person <3</p>
+          <p>That's my GOOD GIRL</p>
+          <div class="media">
+            <div class="gifWrap">
+              <img src="${escapeAttr(GIF_URL)}" alt="Dancing gif" />
+            </div>
+            <div class="photoWrap">
+              <img src="${escapeAttr(PHOTO_URL)}" alt="Our photo" />
+            </div>
+          </div>
+
+          <div class="qa" style="margin-top:14px">
+            ${answersHtml}
+          </div>
+
+          <div class="actions" style="justify-content:center;margin-top:14px">
+            <button class="btn btn-secondary" id="resetBtn">Reset 🔁</button>
+          </div>
+          <div class="actions" style="justify-content:center;margin-top:14px">
+            <button class="btn btn-secondary" id="secretBtn">Secret Button Shiiiiii</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("secretBtn").onclick = () => {
+        next();
+      };
+
+      document.getElementById("resetBtn").onclick = () => {
+        localStorage.removeItem("valentine_answers_v1");
+        state.answers = [];
+        state.step = 0;
+        render();
+      };
+
+      return;
+    }
+
+    // Secret
+    if (step === 1 + QUESTIONS.length + 2) {
+      screenEl.innerHTML = `
+        <div class="finale">
+          <div class="big-heart"></div>
+
+          <h1>Shhhh… secret 💝</h1>
+          <p>Okay ${HER_NAME}… you want a gift from your ${YOUR_NAME}, right??</p>
+          <p>A good girl deserves it 😌</p>
+          <p>Take a look on the steam 👀</p>
+
+          <div class="media">
+            <div class="photoWrap">
+              <img src="${escapeAttr(PHOTO2_URL)}" alt="Secret photo" />
+            </div>
+          </div>
+
+          <div class="actions" style="justify-content:center;margin-top:14px">
+            <button class="btn btn-secondary" id="backFinaleBtn">Back</button>
+            <button class="btn btn-secondary" id="resetBtn">Reset 🔁</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("backFinaleBtn").onclick = () => {
+        state.step = 1 + QUESTIONS.length + 1; // go back to finale
+        render();
+      };
+
+      document.getElementById("resetBtn").onclick = () => {
+        localStorage.removeItem("valentine_answers_v1");
+        state.answers = [];
+        state.step = 0;
+        render();
+      };
+
+      return;
+    }
+  }
+
+  function next() {
+    state.step = Math.min(state.step + 1, TOTAL - 1);
+    render();
+  }
+  function prevStep() {
+    state.step = Math.max(state.step - 1, 0);
+    render();
+  }
+
+  // ====== No button movement ======
+  function moveNoButton(container, btn, first=false) {
+    const pad = 10;
+    const c = container.getBoundingClientRect();
+    const b = btn.getBoundingClientRect();
+
+    // Keep within container
+    const maxX = c.width - b.width - pad;
+    const maxY = c.height - b.height - pad;
+
+    let x = rand(pad, Math.max(pad, maxX));
+    let y = rand(pad, Math.max(pad, maxY));
+
+    // If first position, keep it near left-ish so it looks intentional
+    if (first) {
+      x = Math.max(pad, Math.min(maxX, pad + 18));
+      y = Math.max(pad, Math.min(maxY, c.height/2 - b.height/2));
+    }
+
+    btn.style.left = x + "px";
+    btn.style.top  = y + "px";
+  }
+
+  // ====== Hearts background ======
+  function spawnHearts() {
+    heartsEl.innerHTML = "";
+    const count = 18; // mobile-friendly
+    const colors = ["#ff4fb7","#ff2b6e","#ffd36a","#ffffff"];
+    for (let i=0;i<count;i++){
+      const h = document.createElement("div");
+      h.className = "heart";
+      const size = rand(10, 22);
+      h.style.width = size+"px";
+      h.style.height= size+"px";
+      h.style.left = rand(0, 100) + "vw";
+      h.style.top = rand(70, 110) + "vh";
+      h.style.color = colors[Math.floor(Math.random()*colors.length)];
+      h.style.opacity = (Math.random()*0.18 + 0.08).toFixed(2);
+      h.style.animationDuration = rand(7, 16) + "s";
+      h.style.animationDelay = (-rand(0, 16)) + "s";
+      heartsEl.appendChild(h);
+    }
+  }
+
+  // ====== Confetti ======
+  const confettiCanvas = document.getElementById("confetti");
+  const ctx = confettiCanvas.getContext("2d");
+  let confettiPieces = [];
+  let confettiTimer = 0;
+
+  function resizeCanvas(){
+    confettiCanvas.width = window.innerWidth * devicePixelRatio;
+    confettiCanvas.height = window.innerHeight * devicePixelRatio;
+    ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  }
+  window.addEventListener("resize", resizeCanvas, {passive:true});
+  resizeCanvas();
+
+  function fireConfetti(){
+    confettiCanvas.classList.add("show");
+    confettiPieces = [];
+    const n = 130;
+    for(let i=0;i<n;i++){
+      confettiPieces.push({
+        x: rand(0, window.innerWidth),
+        y: rand(-40, window.innerHeight*0.2),
+        r: rand(2, 6),
+        vx: rand(-2.2, 2.2),
+        vy: rand(2, 6),
+        a: rand(0, Math.PI*2),
+        va: rand(-0.18, 0.18),
+        life: rand(60, 140)
+      });
+    }
+    confettiTimer = 160;
+    requestAnimationFrame(tickConfetti);
+  }
+
+  function tickConfetti(){
+    ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+    confettiTimer--;
+
+    // no fixed colors requirement doesn't apply here; still, we'll keep it subtle + themed
+    for(const p of confettiPieces){
+      p.x += p.vx;
+      p.y += p.vy;
+      p.a += p.va;
+      p.vy += 0.02; // gravity
+      p.life--;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.a);
+      ctx.globalAlpha = Math.max(0, Math.min(1, p.life/120));
+      ctx.fillStyle = ["#ff4fb7","#ff2b6e","#ffd36a","#ffffff"][Math.floor(Math.random()*4)];
+      ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+      ctx.restore();
+    }
+
+    confettiPieces = confettiPieces.filter(p => p.life > 0 && p.y < window.innerHeight + 40);
+
+    if(confettiTimer > 0 && confettiPieces.length){
+      requestAnimationFrame(tickConfetti);
+    } else {
+      confettiCanvas.classList.remove("show");
+      ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+    }
+  }
+
+  // ====== Storage ======
+  function saveAnswers(arr){
+    try { localStorage.setItem("valentine_answers_v1", JSON.stringify(arr)); }
+    catch {}
+  }
+  function loadAnswers(){
+    try {
+      const raw = localStorage.getItem("valentine_answers_v1");
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+
+  // ====== Little helpers ======
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+
+  function escapeHtml(str){
+    return String(str ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+  function escapeAttr(str){ return escapeHtml(str).replaceAll("\n"," "); }
+
+  function littleShake(){
+    cardEl.classList.remove("shake");
+    // force reflow
+    void cardEl.offsetWidth;
+    cardEl.classList.add("shake");
+  }
+
+  function boop(text){
+    // super tiny toast using alert-like vibe but nicer
+    const t = document.createElement("div");
+    t.textContent = text;
+    t.style.position = "fixed";
+    t.style.left = "50%";
+    t.style.bottom = "24px";
+    t.style.transform = "translateX(-50%)";
+    t.style.padding = "10px 14px";
+    t.style.borderRadius = "999px";
+    t.style.background = "rgba(0,0,0,.45)";
+    t.style.border = "1px solid rgba(255,255,255,.18)";
+    t.style.color = "rgba(255,255,255,.92)";
+    t.style.backdropFilter = "blur(10px)";
+    t.style.zIndex = 9999;
+    t.style.fontWeight = "700";
+    t.style.boxShadow = "0 18px 60px rgba(0,0,0,.35)";
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 1200);
+  }
+
+  // ====== Init ======
+  spawnHearts();
+  render();
+</script>
+</body>
+</html>
